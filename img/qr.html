@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+    <!-- Include the qrcode.js library -->
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+</head>
+<body>
+    <h1>QR Code Generator</h1>
+
+    <!-- Display the current URL -->
+    <p>Current URL: <span id="currentUrl"></span></p>
+
+    <!-- Container for the generated QR code -->
+    <div id="qrcode"></div>
+
+    <!-- Buttons for downloading and sharing -->
+    <button onclick="downloadQRCode()">Download QR Code</button>
+    <button onclick="shareViaEmail()">Share via Email</button>
+    <button onclick="shareViaWhatsApp()">Share via WhatsApp</button>
+
+    <script>
+        // Function to get the current URL
+        function getCurrentUrl() {
+            document.getElementById('currentUrl').innerText = window.location.href;
+            return window.location.href;
+        }
+
+        // Function to generate the QR code
+        function generateQRCode(url) {
+            var qrcode = new QRCode(document.getElementById("qrcode"), {
+                text: url,
+                width: 128,
+                height: 128
+            });
+        }
+
+        // Function to download the QR code
+        function downloadQRCode() {
+            var canvas = document.getElementById("qrcode").getElementsByTagName("canvas")[0];
+            var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+            var link = document.createElement('a');
+            link.setAttribute('download', 'qrcode.png');
+            link.setAttribute('href', image);
+            link.click();
+        }
+
+        // Function to share the QR code via email
+        function shareViaEmail() {
+            var currentUrl = getCurrentUrl();
+            var subject = "Check out this QR code!";
+            var body = `I found this QR code for the page ${currentUrl}.`;
+            var mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = mailtoLink;
+        }
+
+        // Function to share the QR code via WhatsApp
+        function shareViaWhatsApp() {
+            var currentUrl = getCurrentUrl();
+            var whatsappLink = `https://wa.me/?text=Check%20out%20this%20QR%20code%20for%20the%20page%20${encodeURIComponent(currentUrl)}`;
+            window.location.href = whatsappLink;
+        }
+
+        // Get the current URL and generate the QR code when the page loads
+        window.onload = function() {
+            var currentUrl = getCurrentUrl();
+            generateQRCode(currentUrl);
+        };
+    </script>
+</body>
+</html>
